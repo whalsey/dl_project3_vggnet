@@ -7,8 +7,8 @@ def unpickle(file):
         dict = cPickle.load(fo)
     return dict
 
-# def make_one_hot(labels):
-
+# reading the data in in this form does requires too much memory (apparently)
+# will read in data in natural form and will do the padding JIT for training/testing
 
 class cifar_10_data:
     def __init__(self):
@@ -17,42 +17,36 @@ class cifar_10_data:
 
         sess = tf.Session()
 
-        with sess.as_default():
+        with tf.device('/cpu:0'):
             data = unpickle("cifar-10-batches-py/data_batch_1")
             tmp = data['data'].reshape((-1, 32, 32, 3))
-            tmp = np.pad(tmp, ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0)
             self.train_X = tmp
-            self.train_y = tf.one_hot(data['labels'], 10).eval()
+            self.train_y = tf.one_hot(data['labels'], 10).eval(session=sess)
 
             data = unpickle("cifar-10-batches-py/data_batch_2")
             tmp = data['data'].reshape((-1, 32, 32, 3))
-            tmp = np.pad(tmp, ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0)
             self.train_X = np.concatenate((self.train_X, tmp))
-            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval()))
+            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval(session=sess)))
 
             data = unpickle("cifar-10-batches-py/data_batch_3")
             tmp = data['data'].reshape((-1, 32, 32, 3))
-            tmp = np.pad(tmp, ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0)
             self.train_X = np.concatenate((self.train_X, tmp))
-            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval()))
+            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval(session=sess)))
 
             data = unpickle("cifar-10-batches-py/data_batch_4")
             tmp = data['data'].reshape((-1, 32, 32, 3))
-            tmp = np.pad(tmp, ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0)
             self.train_X = np.concatenate((self.train_X, tmp))
-            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval()))
+            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval(session=sess)))
 
             data = unpickle("cifar-10-batches-py/data_batch_5")
             tmp = data['data'].reshape((-1, 32, 32, 3))
-            tmp = np.pad(tmp, ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0)
             self.train_X = np.concatenate((self.train_X, tmp))
-            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval()))
+            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval(session=sess)))
 
             data = unpickle("cifar-10-batches-py/test_batch")
             tmp = data['data'].reshape((-1, 32, 32, 3))
-            tmp = np.pad(tmp, ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0)
             self.test_X = tmp
-            self.test_y = tf.one_hot(data['labels'], 10).eval()
+            self.test_y = tf.one_hot(data['labels'], 10).eval(session=sess)
 
         self._num_examples = self.train_X.shape[0]
 

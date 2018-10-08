@@ -10,6 +10,7 @@
 
 import tensorflow as tf
 import numpy as np
+import os
 # from scipy.misc import imread, imresize
 
 import data_processing
@@ -17,7 +18,7 @@ import data_processing
 data = data_processing.read_cifar10_data()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=100, batch=10000):
+    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=100, batch=50):
         self.lr = lr
         self.epochs = epochs
         self.batch = batch
@@ -219,20 +220,24 @@ class vgg16:
         self.eval()  # creating evaluation
         train_result = []
         for i in range(self.epochs):
+            print("epoch {}".format(i))
             # todo - will have to implement batching for cifar-10
             batch = data.next_batch(self.batch)
             old_batch = []
 
+            j = 0
             while batch[0] != []:
-                self.sess.run([self.train_step], feed_dict={self.x: batch[0], self.y_: batch[1]})
+                print("batch {}".format(j))
+                self.sess.run([self.train_step], feed_dict={self.x: np.pad(batch[0], ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0), self.y_: batch[1]})
 
                 old_batch = batch
                 batch = data.next_batch(self.batch)
+                j += 1
 
             if i % report_freq == 0 and old_batch != []:
 
                 train_acc = self.sess.run(self.accuracy,
-                                          feed_dict={self.x: old_batch[0], self.y_: old_batch[1]})
+                                          feed_dict={self.x: np.pad(old_batch[0], ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0), self.y_: old_batch[1]})
                 train_result.append(train_acc)
 
                 print('step %d, training accuracy %g' % (i, train_acc))
@@ -245,14 +250,17 @@ class vgg16:
 
     def test_eval(self):
         self.eval()
-        test_acc = self.sess.run(self.accuracy, feed_dict={self.x: data.test_X, self.y_: data.test_y})
+        test_acc = self.sess.run(self.accuracy, feed_dict={self.x: np.pad(data.test_X, ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0), self.y_: data.test_y})
         print('test accuracy %g' % test_acc)
         return test_acc
 
 if __name__ == '__main__':
+    print("initializing network")
     sess = tf.Session()
-    net = vgg16(sess=sess, batch=1)
+    net = vgg16(sess=sess)
+    print("training")
     train_acc = net.train(10)
+    print("testing")
     test_acc = net.test_eval()
 
     # sess = tf.Session()
