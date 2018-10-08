@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from scipy.misc import imresize
 
 def unpickle(file):
     import cPickle
@@ -9,6 +10,11 @@ def unpickle(file):
 
 # reading the data in in this form does requires too much memory (apparently)
 # will read in data in natural form and will do the padding JIT for training/testing
+def pad_image(dataset, padding):
+    return np.pad(dataset, ((0,), (padding,), (padding,), (0,), mode='constant', constant_values=0)
+            
+def resize_image(dataset, new_size):
+    pass
 
 class cifar_10_data:
     def __init__(self):
