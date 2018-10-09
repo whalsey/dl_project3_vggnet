@@ -18,7 +18,7 @@ data = data_processing.read_cifar10_data()
 data.zero_center()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=1e-5, epochs=20, batch=50):
+    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=20, batch=50):
         self.lr = lr
         self.epochs = epochs
         self.batch = batch
