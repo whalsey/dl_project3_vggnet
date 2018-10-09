@@ -18,7 +18,7 @@ data = data_processing.read_cifar10_data()
 data.zero_center()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=20, batch=50):
+    def __init__(self, weights=None, sess=None, lr=1e-5, epochs=20, batch=50):
         self.lr = lr
         self.epochs = epochs
         self.batch = batch
@@ -39,7 +39,7 @@ class vgg16:
         # zero-mean input
         # todo - this probably should be changed b/c it doesn't apply to our new dataset
         with tf.name_scope('preprocess') as scope:
-            resized = tf.image.resize_images(self.x, [224, 224], method=tf.image.resize_bilinear)
+            resized = tf.image.resize_images(self.x, [224, 224])
 
         # conv1_1
         with tf.name_scope('conv1_1') as scope:
@@ -219,6 +219,7 @@ class vgg16:
         self.eval()  # creating evaluation
         train_result = []
         valid_result = []
+        stop_acc = 0
         for i in range(self.epochs):
             print("epoch {}".format(i))
             # todo - will have to implement batching for cifar-10
@@ -237,14 +238,19 @@ class vgg16:
             if i % report_freq == 0 and old_batch != []:
 
                 train_acc = self.sess.run(self.accuracy,
-                                          feed_dict={self.x: batch[0], self.y_: old_batch[1]})
+                                          feed_dict={self.x: old_batch[0], self.y_: old_batch[1]})
                 train_result.append(train_acc)
 
                 valid_acc = self.test_eval()
                 valid_result.append(valid_acc)
 
+                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
+
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
+
+            if len(valid_result) > 5 and stop_acc not in valid_result[-5:]:
+                break
 
         return train_result, valid_result
 
@@ -256,7 +262,7 @@ class vgg16:
         self.eval()
         average = []
         for i in range(0,10000,50):
-            average.append( self.sess.run(self.accuracy, feed_dict={self.x: data.test_X[i:i+50], self.y_: data.test_y}) )
+            average.append( self.sess.run(self.accuracy, feed_dict={self.x: data.test_X[i:i+50], self.y_: data.test_y[i:i+50]}) )
 
         ave = np.array(average).mean()
 
