@@ -38,9 +38,8 @@ class vgg16:
 
         # zero-mean input
         # todo - this probably should be changed b/c it doesn't apply to our new dataset
-        # with tf.name_scope('preprocess') as scope:
-        #     mean = tf.constant([123.68, 116.779, 103.939], dtype=tf.float32, shape=[1, 1, 1, 3], name='img_mean')
-        #     images = self.imgs-mean
+        with tf.name_scope('preprocess') as scope:
+            self.x = tf.image.resize_images(self.x, (224, 224), method=tf.image.resize_bilinear)
 
         # conv1_1
         with tf.name_scope('conv1_1') as scope:
@@ -229,7 +228,7 @@ class vgg16:
             j = 0
             while batch[0] != []:
                 print("batch {}".format(j))
-                self.sess.run([self.train_step], feed_dict={self.x: tf.image.resize_images(batch[0], (224,224), method=tf.image.resize_bilinear), self.y_: batch[1]})
+                self.sess.run([self.train_step], feed_dict={self.x: batch[0], self.y_: batch[1]})
 
                 old_batch = batch
                 batch = data.next_batch(self.batch)
@@ -238,7 +237,7 @@ class vgg16:
             if i % report_freq == 0 and old_batch != []:
 
                 train_acc = self.sess.run(self.accuracy,
-                                          feed_dict={self.x: tf.image.resize_images(batch[0], (224,224), method=tf.image.resize_bilinear), self.y_: old_batch[1]})
+                                          feed_dict={self.x: batch[0], self.y_: old_batch[1]})
                 train_result.append(train_acc)
 
                 valid_acc = self.test_eval()
@@ -257,7 +256,7 @@ class vgg16:
         self.eval()
         average = []
         for i in range(0,10000,50):
-            average.append( self.sess.run(self.accuracy, feed_dict={self.x: tf.image.resize_images(data.test_X[i:i+50], (224,224), method=tf.image.resize_bilinear), self.y_: data.test_y}) )
+            average.append( self.sess.run(self.accuracy, feed_dict={self.x: data.test_X[i:i+50], self.y_: data.test_y}) )
 
         ave = np.array(average).mean()
 
