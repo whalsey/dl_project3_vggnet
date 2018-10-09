@@ -11,7 +11,7 @@
 import tensorflow as tf
 import numpy as np
 import os
-
+import sys
 import data_processing
 
 data = data_processing.read_cifar10_data()
@@ -223,20 +223,25 @@ class vgg16:
         valid_result = []
         stop_acc = 0
         for i in range(self.epochs):
-            print("epoch {}".format(i))
+            sys.stdout.write("epoch {}: ".format(i))
+            sys.stdout.flush()
             # todo - will have to implement batching for cifar-10
             batch = data.next_batch(self.batch)
             old_batch = []
 
             j = 0
             while batch[0] != []:
-                print("batch {}".format(j))
+                if j%10 == 0:   
+                    sys.stdout.write("=")
+                    sys.stdout.flush()
                 self.sess.run([self.train_step], feed_dict={self.x: batch[0], self.y_: batch[1]})
 
                 old_batch = batch
                 batch = data.next_batch(self.batch)
                 j += 1
 
+            sys.stdout.write('\n')
+            sys.stdout.flush()
             if i % report_freq == 0 and old_batch != []:
 
                 train_acc = self.sess.run(self.accuracy,

@@ -90,6 +90,7 @@ class cifar_10_data:
     def zero_center(self):
         mean = self.get_mean()
         self.train_X = np.subtract(self.train_X, np.floor(mean))
+        self.valid_X = np.subtract(self.valid_X, np.floor(mean))
         self.test_X = np.subtract(self.test_X, np.floor(mean))
 
 def read_cifar10_data():
