@@ -11,14 +11,14 @@
 import tensorflow as tf
 import numpy as np
 import os
-# from scipy.misc import imread, imresize
 
 import data_processing
 
 data = data_processing.read_cifar10_data()
+data.zero_center()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=100, batch=50):
+    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=20, batch=50):
         self.lr = lr
         self.epochs = epochs
         self.batch = batch
@@ -219,6 +219,7 @@ class vgg16:
         self.sess.run(init)
         self.eval()  # creating evaluation
         train_result = []
+        valid_result = []
         for i in range(self.epochs):
             print("epoch {}".format(i))
             # todo - will have to implement batching for cifar-10
@@ -228,7 +229,7 @@ class vgg16:
             j = 0
             while batch[0] != []:
                 print("batch {}".format(j))
-                self.sess.run([self.train_step], feed_dict={self.x: np.pad(batch[0], ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0), self.y_: batch[1]})
+                self.sess.run([self.train_step], feed_dict={self.x: data_processing.resize_image(batch[0], (224,224)), self.y_: batch[1]})
 
                 old_batch = batch
                 batch = data.next_batch(self.batch)
@@ -237,12 +238,16 @@ class vgg16:
             if i % report_freq == 0 and old_batch != []:
 
                 train_acc = self.sess.run(self.accuracy,
-                                          feed_dict={self.x: np.pad(old_batch[0], ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0), self.y_: old_batch[1]})
+                                          feed_dict={self.x: data_processing.resize_image(batch[0], (224,224)), self.y_: old_batch[1]})
                 train_result.append(train_acc)
 
-                print('step %d, training accuracy %g' % (i, train_acc))
+                valid_acc = self.test_eval()
+                valid_result.append(valid_acc)
 
-        return train_result
+                print('step %d, training accuracy %g' % (i, train_acc))
+                print('step %d, validation accuracy %g' % (i, valid_acc))
+
+        return train_result, valid_result
 
     def eval(self):
         correct_prediction = tf.equal(tf.argmax(self.probs, 1), tf.argmax(self.y_, 1))
@@ -250,18 +255,37 @@ class vgg16:
 
     def test_eval(self):
         self.eval()
-        test_acc = self.sess.run(self.accuracy, feed_dict={self.x: np.pad(data.test_X, ((0,), (96,), (96,), (0,)), mode='constant', constant_values=0), self.y_: data.test_y})
-        print('test accuracy %g' % test_acc)
-        return test_acc
+        average = []
+        for i in range(0,10000,50):
+            average.append( self.sess.run(self.accuracy, feed_dict={self.x: data_processing.resize_image(data.test_X[i:i+50], (224,224)), self.y_: data.test_y}) )
+
+        ave = np.array(average).mean()
+
+        print('test accuracy %g' % ave)
+        return ave
 
 if __name__ == '__main__':
     print("initializing network")
     sess = tf.Session()
     net = vgg16(sess=sess)
     print("training")
-    train_acc = net.train(10)
+    train_acc, valid_acc = net.train(1)
     print("testing")
     test_acc = net.test_eval()
+
+    with open("output.csv", 'w') as o:
+        buffer = ','.join(["epoch"] + [str(i) for i in range(20)])+'\n'
+        o.write(buffer)
+
+        buffer = ','.join(["training"] + [str(i) for i in train_acc])+'\n'
+        o.write(buffer)
+
+        buffer = ','.join(["validation"] + [str(i) for i in valid_acc])+'\n'
+        o.write(buffer)
+
+        buffer = str(test_acc)+'\n'
+        o.write(buffer)
+        o.flush()
 
     # sess = tf.Session()
     # imgs = tf.placeholder(tf.float32, [None, 224, 224, 3])
