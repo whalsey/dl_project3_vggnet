@@ -18,8 +18,9 @@ data = data_processing.read_cifar10_data()
 data.zero_center()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=20, batch=50):
+    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=20, batch=50, decay=0.5):
         self.lr = lr
+        self.decay = decay
         self.epochs = epochs
         self.batch = batch
         self.convlayers()
@@ -217,6 +218,7 @@ class vgg16:
         init = tf.global_variables_initializer()
         self.sess.run(init)
         self.eval()  # creating evaluation
+        lr_l = []
         train_result = []
         valid_result = []
         stop_acc = 0
@@ -241,18 +243,24 @@ class vgg16:
                                           feed_dict={self.x: old_batch[0], self.y_: old_batch[1]})
                 train_result.append(train_acc)
 
-                valid_acc = self.test_eval()
+                valid_acc = self.valid_eval()
                 valid_result.append(valid_acc)
+
+                lr_l.append(self.lr)
 
                 stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
 
-            if len(valid_result) > 5 and stop_acc not in valid_result[-5:]:
+            # learning rate decay
+            if len(valid_result) > 3 and stop_acc not in valid_result[-3:]:
+                self.lr *= self.decay
+
+            if len(valid_result) > 6 and stop_acc not in valid_result[-6:]:
                 break
 
-        return train_result, valid_result
+        return train_result, valid_result, lr_l
 
     def eval(self):
         correct_prediction = tf.equal(tf.argmax(self.probs, 1), tf.argmax(self.y_, 1))
@@ -266,7 +274,18 @@ class vgg16:
 
         ave = np.array(average).mean()
 
-        print('test accuracy %g' % ave)
+        print('Test accuracy accuracy %g' % (ave))
+
+        return ave
+
+    def valid_eval(self):
+        self.eval()
+        average = []
+        for i in range(0,10000,50):
+            average.append( self.sess.run(self.accuracy, feed_dict={self.x: data.valid_X[i:i+50], self.y_: data.valid_y[i:i+50]}) )
+
+        ave = np.array(average).mean()
+
         return ave
 
 if __name__ == '__main__':
@@ -274,7 +293,7 @@ if __name__ == '__main__':
     sess = tf.Session()
     net = vgg16(sess=sess)
     print("training")
-    train_acc, valid_acc = net.train(1)
+    train_acc, valid_acc, lr_l = net.train(1)
     print("testing")
     test_acc = net.test_eval()
 
@@ -286,6 +305,9 @@ if __name__ == '__main__':
         o.write(buffer)
 
         buffer = ','.join(["validation"] + [str(i) for i in valid_acc])+'\n'
+        o.write(buffer)
+
+        buffer = ','.join(["learning_rate"] + [str(i) for i in lr_l]) + '\n'
         o.write(buffer)
 
         buffer = str(test_acc)+'\n'

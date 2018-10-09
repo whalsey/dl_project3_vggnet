@@ -26,13 +26,13 @@ class cifar_10_data:
         with tf.device('/cpu:0'):
             data = unpickle("cifar-10-batches-py/data_batch_1")
             tmp = data['data'].reshape((-1, 32, 32, 3))
-            self.train_X = tmp
-            self.train_y = tf.one_hot(data['labels'], 10).eval(session=sess)
+            self.valid_X = tmp
+            self.valid_y = tf.one_hot(data['labels'], 10).eval(session=sess)
 
             data = unpickle("cifar-10-batches-py/data_batch_2")
             tmp = data['data'].reshape((-1, 32, 32, 3))
-            self.train_X = np.concatenate((self.train_X, tmp))
-            self.train_y = np.concatenate((self.train_y, tf.one_hot(data['labels'], 10).eval(session=sess)))
+            self.train_X = tmp
+            self.train_y = tf.one_hot(data['labels'], 10).eval(session=sess)
 
             data = unpickle("cifar-10-batches-py/data_batch_3")
             tmp = data['data'].reshape((-1, 32, 32, 3))
