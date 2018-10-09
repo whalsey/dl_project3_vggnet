@@ -33,18 +33,18 @@ class vgg16:
     def convlayers(self):
         self.parameters = []
 
-        self.x = tf.placeholder(tf.float32, shape=[None, 224, 224, 3])
+        self.x = tf.placeholder(tf.float32, shape=[None, 32, 32, 3])
         self.y_ = tf.placeholder(tf.float32, shape=[None, 10])
 
         # zero-mean input
         # todo - this probably should be changed b/c it doesn't apply to our new dataset
         with tf.name_scope('preprocess') as scope:
-            self.x = tf.image.resize_images(self.x, (224, 224), method=tf.image.resize_bilinear)
+            resized = tf.image.resize_images(self.x, (224, 224), method=tf.image.resize_bilinear)
 
         # conv1_1
         with tf.name_scope('conv1_1') as scope:
             kernel = tf.Variable(tf.truncated_normal([3, 3, 3, 64], dtype=tf.float32, stddev=1e-1), name='weights')
-            conv = tf.nn.conv2d(self.x, kernel, [1, 1, 1, 1], padding='SAME')
+            conv = tf.nn.conv2d(resized, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[64], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
             self.conv1_1 = tf.nn.relu(out, name=scope)
