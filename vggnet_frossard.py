@@ -39,7 +39,7 @@ class vgg16:
         # zero-mean input
         # todo - this probably should be changed b/c it doesn't apply to our new dataset
         with tf.name_scope('preprocess') as scope:
-            resized = tf.image.resize_images(self.x, (224, 224), method=tf.image.resize_bilinear)
+            resized = tf.image.resize_images(self.x, [224, 224], method=tf.image.resize_bilinear)
 
         # conv1_1
         with tf.name_scope('conv1_1') as scope:
