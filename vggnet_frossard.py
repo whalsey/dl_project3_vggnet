@@ -229,7 +229,7 @@ class vgg16:
             j = 0
             while batch[0] != []:
                 print("batch {}".format(j))
-                self.sess.run([self.train_step], feed_dict={self.x: data_processing.resize_image(batch[0], [224,224]), self.y_: batch[1]})
+                self.sess.run([self.train_step], feed_dict={self.x: tf.image.resize_images(batch[0], (224,224), method=tf.image.resize_bilinear), self.y_: batch[1]})
 
                 old_batch = batch
                 batch = data.next_batch(self.batch)
@@ -238,7 +238,7 @@ class vgg16:
             if i % report_freq == 0 and old_batch != []:
 
                 train_acc = self.sess.run(self.accuracy,
-                                          feed_dict={self.x: data_processing.resize_image(batch[0], [224,224]), self.y_: old_batch[1]})
+                                          feed_dict={self.x: tf.image.resize_images(batch[0], (224,224), method=tf.image.resize_bilinear), self.y_: old_batch[1]})
                 train_result.append(train_acc)
 
                 valid_acc = self.test_eval()
@@ -257,7 +257,7 @@ class vgg16:
         self.eval()
         average = []
         for i in range(0,10000,50):
-            average.append( self.sess.run(self.accuracy, feed_dict={self.x: data_processing.resize_image(data.test_X[i:i+50], [224,224]), self.y_: data.test_y}) )
+            average.append( self.sess.run(self.accuracy, feed_dict={self.x: tf.image.resize_images(data.test_X[i:i+50], (224,224), method=tf.image.resize_bilinear), self.y_: data.test_y}) )
 
         ave = np.array(average).mean()
 
