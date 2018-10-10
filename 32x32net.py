@@ -37,15 +37,15 @@ class vgg16:
         self.x = tf.placeholder(tf.float32, shape=[None, 32, 32, 3])
         self.y_ = tf.placeholder(tf.float32, shape=[None, 10])
 
-        # zero-mean input
-        # todo - this probably should be changed b/c it doesn't apply to our new dataset
-        with tf.name_scope('preprocess') as scope:
-            resized = tf.image.resize_images(self.x, [224, 224])
+        # # zero-mean input
+        # # todo - this probably should be changed b/c it doesn't apply to our new dataset
+        # with tf.name_scope('preprocess') as scope:
+        #     resized = tf.image.resize_images(self.x, [224, 224])
 
         # conv1_1
         with tf.name_scope('conv1_1') as scope:
             kernel = tf.Variable(tf.truncated_normal([3, 3, 3, 64], dtype=tf.float32, stddev=1e-1), name='weights')
-            conv = tf.nn.conv2d(resized, kernel, [1, 1, 1, 1], padding='SAME')
+            conv = tf.nn.conv2d(self.x, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[64], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
             self.conv1_1 = tf.nn.relu(out, name=scope)
@@ -178,7 +178,8 @@ class vgg16:
         # fc1
         with tf.name_scope('fc1') as scope:
             shape = int(np.prod(self.pool5.get_shape()[1:]))
-            fc1w = tf.Variable(tf.truncated_normal([shape, 4096], dtype=tf.float32, stddev=1e-1), name='weights')
+            # todo - use dense layers instead and add dropout
+            fc1w = tf.Variable(tf.truncated_normal([shape, 1024], dtype=tf.float32, stddev=1e-1), name='weights')
             fc1b = tf.Variable(tf.constant(1.0, shape=[4096], dtype=tf.float32), trainable=True, name='biases')
             pool5_flat = tf.reshape(self.pool5, [-1, shape])
             fc1l = tf.nn.bias_add(tf.matmul(pool5_flat, fc1w), fc1b)
@@ -187,7 +188,7 @@ class vgg16:
 
         # fc2
         with tf.name_scope('fc2') as scope:
-            fc2w = tf.Variable(tf.truncated_normal([4096, 4096], dtype=tf.float32, stddev=1e-1), name='weights')
+            fc2w = tf.Variable(tf.truncated_normal([1024, 1024], dtype=tf.float32, stddev=1e-1), name='weights')
             fc2b = tf.Variable(tf.constant(1.0, shape=[4096], dtype=tf.float32), trainable=True, name='biases')
             fc2l = tf.nn.bias_add(tf.matmul(self.fc1, fc2w), fc2b)
             self.fc2 = tf.nn.relu(fc2l)
@@ -196,12 +197,11 @@ class vgg16:
         # fc3
         # the output of this layer must be changed in order to accommodate the fact that cifar-10 only has 10 labels
         with tf.name_scope('fc3') as scope:
-            fc3w = tf.Variable(tf.truncated_normal([4096, 10], dtype=tf.float32, stddev=1e-1), name='weights')
+            fc3w = tf.Variable(tf.truncated_normal([1024, 10], dtype=tf.float32, stddev=1e-1), name='weights')
             fc3b = tf.Variable(tf.constant(1.0, shape=[10], dtype=tf.float32), trainable=True, name='biases')
             self.fc3l = tf.nn.bias_add(tf.matmul(self.fc2, fc3w), fc3b)
             self.parameters += [fc3w, fc3b]
 
-        # todo-need to determin fi the 'logits' needs to be self.probs or self.fc3l
         out = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y_, logits=self.fc3l))
         self.train_step = tf.train.AdamOptimizer(self.lr).minimize(out)
 
@@ -222,7 +222,6 @@ class vgg16:
         train_result = []
         valid_result = []
         stop_acc = 0
-        stuck = 0
         for i in range(self.epochs):
             sys.stdout.write("epoch {}: ".format(i))
             sys.stdout.flush()
@@ -232,7 +231,7 @@ class vgg16:
 
             j = 0
             while batch[0] != []:
-                if j%10 == 0:   
+                if j%10 == 0:
                     sys.stdout.write("=")
                     sys.stdout.flush()
                 self.sess.run([self.train_step], feed_dict={self.x: batch[0], self.y_: batch[1]})
@@ -255,15 +254,13 @@ class vgg16:
                 lr_l.append(self.lr)
 
                 stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
-                stuck = stuck if valid_acc > stop_acc else stuck+1
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
 
             # learning rate decay
-            if stuck > 3 and stop_acc:
+            if len(valid_result) > 3 and stop_acc not in valid_result[-3:]:
                 self.lr *= self.decay
-                stuck = 0
 
             if len(valid_result) > 6 and stop_acc not in valid_result[-6:]:
                 break
