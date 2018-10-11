@@ -291,7 +291,8 @@ class vgg16:
     def valid_eval(self):
         self.eval()
         average = []
-        for i in range(0,10000,50):
+        # for i in range(0,10000,50):
+        for i in range(0, 500, 50):
             average.append( self.sess.run(self.accuracy, feed_dict={self.x: data.valid_X[i:i+50], self.y_: data.valid_y[i:i+50]}) )
 
         ave = np.array(average).mean()
