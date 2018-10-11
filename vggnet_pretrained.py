@@ -208,7 +208,7 @@ class vgg16_1:
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
         keys = sorted(weights.keys())
-        keys = keys[:-1]
+        keys = keys[:-2]
         for i, k in enumerate(keys):
             print i, k, np.shape(weights[k])
             sess.run(self.parameters[i].assign(weights[k]))
@@ -488,7 +488,7 @@ class vgg16_2:
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
         keys = sorted(weights.keys())
-        keys = keys[:-1]
+        keys = keys[:-2]
         for i, k in enumerate(keys):
             print i, k, np.shape(weights[k])
             sess.run(self.parameters[i].assign(weights[k]))
@@ -768,7 +768,7 @@ class vgg16_3:
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
         keys = sorted(weights.keys())
-        keys = keys[:-1]
+        keys = keys[:-2]
         for i, k in enumerate(keys):
             print i, k, np.shape(weights[k])
             sess.run(self.parameters[i].assign(weights[k]))
@@ -1048,7 +1048,7 @@ class vgg16_4:
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
         keys = sorted(weights.keys())
-        keys = keys[:-1]
+        keys = keys[:-2]
         for i, k in enumerate(keys):
             print i, k, np.shape(weights[k])
             sess.run(self.parameters[i].assign(weights[k]))
