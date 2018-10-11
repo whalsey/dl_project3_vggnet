@@ -259,6 +259,7 @@ class vgg16:
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
+                print('step %d, learning rate %g' % (i, self.lr))
 
             # learning rate decay
             if stuck > 3 and stop_acc:

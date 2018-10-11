@@ -54,6 +54,15 @@ class cifar_10_data:
             self.test_X = tmp
             self.test_y = tf.one_hot(data['labels'], 10).eval(session=sess)
 
+        self.train_X = self.train_X[:100]
+        self.train_y = self.train_y[:100]
+
+        self.valid_X = self.valid_X[:50]
+        self.valid_y = self.valid_y[:50]
+
+        self.test_X = self.test_X[:50]
+        self.test_y = self.test_y[:50]
+
         self._num_examples = self.train_X.shape[0]
 
         return

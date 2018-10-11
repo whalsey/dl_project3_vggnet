@@ -208,6 +208,7 @@ class vgg16_1:
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
         keys = sorted(weights.keys())
+        keys = keys[:-1]
         for i, k in enumerate(keys):
             print i, k, np.shape(weights[k])
             sess.run(self.parameters[i].assign(weights[k]))
@@ -258,6 +259,7 @@ class vgg16_1:
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
+                print('step %d, learning rate %g' % (i, self.lr))
 
             # learning rate decay
             if stuck > 3 and stop_acc:
@@ -486,6 +488,7 @@ class vgg16_2:
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
         keys = sorted(weights.keys())
+        keys = keys[:-1]
         for i, k in enumerate(keys):
             print i, k, np.shape(weights[k])
             sess.run(self.parameters[i].assign(weights[k]))
@@ -536,6 +539,7 @@ class vgg16_2:
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
+                print('step %d, learning rate %g' % (i, self.lr))
 
             # learning rate decay
             if stuck > 3 and stop_acc:
@@ -764,6 +768,7 @@ class vgg16_3:
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
         keys = sorted(weights.keys())
+        keys = keys[:-1]
         for i, k in enumerate(keys):
             print i, k, np.shape(weights[k])
             sess.run(self.parameters[i].assign(weights[k]))
@@ -814,6 +819,7 @@ class vgg16_3:
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
+                print('step %d, learning rate %g' % (i, self.lr))
 
             # learning rate decay
             if stuck > 3 and stop_acc:
@@ -1042,6 +1048,7 @@ class vgg16_4:
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
         keys = sorted(weights.keys())
+        keys = keys[:-1]
         for i, k in enumerate(keys):
             print i, k, np.shape(weights[k])
             sess.run(self.parameters[i].assign(weights[k]))
@@ -1092,6 +1099,7 @@ class vgg16_4:
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
+                print('step %d, learning rate %g' % (i, self.lr))
 
             # learning rate decay
             if stuck > 3 and stop_acc:
