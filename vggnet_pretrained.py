@@ -254,8 +254,8 @@ class vgg16_1:
 
                 lr_l.append(self.lr)
 
-                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
                 stuck = stuck if valid_acc > stop_acc else stuck + 1
+                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
@@ -534,8 +534,8 @@ class vgg16_2:
 
                 lr_l.append(self.lr)
 
-                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
                 stuck = stuck if valid_acc > stop_acc else stuck + 1
+                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
@@ -814,8 +814,8 @@ class vgg16_3:
 
                 lr_l.append(self.lr)
 
-                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
                 stuck = stuck if valid_acc > stop_acc else stuck + 1
+                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
@@ -1094,8 +1094,8 @@ class vgg16_4:
 
                 lr_l.append(self.lr)
 
-                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
                 stuck = stuck if valid_acc > stop_acc else stuck + 1
+                stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))

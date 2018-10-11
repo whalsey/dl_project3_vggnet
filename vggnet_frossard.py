@@ -254,15 +254,15 @@ class vgg16:
 
                 lr_l.append(self.lr)
 
+                stuck = stuck if valid_acc > stop_acc else stuck + 1
                 stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
-                stuck = stuck if valid_acc > stop_acc else stuck+1
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
                 print('step %d, learning rate %g' % (i, self.lr))
 
             # learning rate decay
-            if stuck > 3 and stop_acc:
+            if stuck >= 3 and stop_acc:
                 self.lr *= self.decay
                 stuck = 0
 
