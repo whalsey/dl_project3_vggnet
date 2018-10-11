@@ -1,5 +1,5 @@
-# import tensorflow as tf
-#
+import tensorflow as tf
+#g
 # # train vggnet from scratch
 # # this will be a best-effort, one-shot attempt
 # from vggnet_frossard import vgg16
