@@ -6,7 +6,7 @@ from vggnet_frossard import vgg16
 
 print("initializing network")
 sess = tf.Session()
-net = vgg16(sess=sess, lr=1e-5, epochs=100, batch=50, decay=0.75)
+net = vgg16(sess=sess, lr=1e-5, epochs=50, batch=50, decay=0.75)
 
 print("training")
 train_acc, valid_acc, lr_l = net.train(1)
@@ -38,7 +38,7 @@ from vggnet_pretrained import vgg16_1
 
 print("initializing network")
 sess = tf.Session()
-net = vgg16_1(weights="vgg16_weights.npz", sess=sess, lr=1e-5, epochs=100, batch=50, decay=0.75)
+net = vgg16_1(weights="vgg16_weights.npz", sess=sess, lr=1e-5, epochs=50, batch=50, decay=0.75)
 
 print("training")
 train_acc, valid_acc, lr_l = net.train(1)
@@ -67,7 +67,7 @@ from vggnet_pretrained import vgg16_2
 
 print("initializing network")
 sess = tf.Session()
-net = vgg16_2(weights="vgg16_weights.npz", sess=sess, lr=1e-5, epochs=100, batch=50, decay=0.75)
+net = vgg16_2(weights="vgg16_weights.npz", sess=sess, lr=1e-5, epochs=50, batch=50, decay=0.75)
 
 print("training")
 train_acc, valid_acc, lr_l = net.train(1)
@@ -96,7 +96,7 @@ from vggnet_pretrained import vgg16_3
 
 print("initializing network")
 sess = tf.Session()
-net = vgg16_3(weights="vgg16_weights.npz", sess=sess, lr=1e-5, epochs=100, batch=50, decay=0.75)
+net = vgg16_3(weights="vgg16_weights.npz", sess=sess, lr=1e-5, epochs=50, batch=50, decay=0.75)
 
 print("training")
 train_acc, valid_acc, lr_l = net.train(1)
@@ -125,7 +125,7 @@ from vggnet_pretrained import vgg16_4
 
 print("initializing network")
 sess = tf.Session()
-net = vgg16_4(weights="vgg16_weights.npz", sess=sess, lr=1e-5, epochs=100, batch=50, decay=0.75)
+net = vgg16_4(weights="vgg16_weights.npz", sess=sess, lr=1e-5, epochs=50, batch=50, decay=0.75)
 
 print("training")
 train_acc, valid_acc, lr_l = net.train(1)
