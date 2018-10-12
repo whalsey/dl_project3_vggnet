@@ -26,3 +26,237 @@ initializing network
 24 conv5_3_W (3, 3, 512, 512)
 25 conv5_3_b (512,)
 26 fc6_W (25088, 4096)
+27 fc6_b (4096,)
+28 fc7_W (4096, 4096)
+29 fc7_b (4096,)
+training
+epoch 0: ================================================================================
+step 0, training accuracy 0.32
+step 0, validation accuracy 0.3002
+step 0, learning rate 1e-05
+epoch 1: ================================================================================
+step 1, training accuracy 0.28
+step 1, validation accuracy 0.3184
+step 1, learning rate 1e-05
+epoch 2: ================================================================================
+step 2, training accuracy 0.4
+step 2, validation accuracy 0.322
+step 2, learning rate 1e-05
+epoch 3: ================================================================================
+step 3, training accuracy 0.28
+step 3, validation accuracy 0.3264
+step 3, learning rate 1e-05
+epoch 4: ================================================================================
+step 4, training accuracy 0.48
+step 4, validation accuracy 0.3443
+step 4, learning rate 1e-05
+epoch 5: ================================================================================
+step 5, training accuracy 0.42
+step 5, validation accuracy 0.3454
+step 5, learning rate 1e-05
+epoch 6: ================================================================================
+step 6, training accuracy 0.38
+step 6, validation accuracy 0.3487
+step 6, learning rate 1e-05
+epoch 7: ================================================================================
+step 7, training accuracy 0.46
+step 7, validation accuracy 0.3555
+step 7, learning rate 1e-05
+epoch 8: ================================================================================
+step 8, training accuracy 0.52
+step 8, validation accuracy 0.3794
+step 8, learning rate 1e-05
+epoch 9: ================================================================================
+step 9, training accuracy 0.56
+step 9, validation accuracy 0.359
+step 9, learning rate 1e-05
+epoch 10: ================================================================================
+step 10, training accuracy 0.48
+step 10, validation accuracy 0.3832
+step 10, learning rate 1e-05
+epoch 11: ================================================================================
+step 11, training accuracy 0.68
+step 11, validation accuracy 0.3786
+step 11, learning rate 1e-05
+epoch 12: ================================================================================
+step 12, training accuracy 0.6
+step 12, validation accuracy 0.3871
+step 12, learning rate 1e-05
+epoch 13: ================================================================================
+step 13, training accuracy 0.44
+step 13, validation accuracy 0.3975
+step 13, learning rate 1e-05
+epoch 14: ================================================================================
+step 14, training accuracy 0.58
+step 14, validation accuracy 0.4007
+step 14, learning rate 1e-05
+epoch 15: ================================================================================
+step 15, training accuracy 0.62
+step 15, validation accuracy 0.3958
+step 15, learning rate 1e-05
+epoch 16: ================================================================================
+step 16, training accuracy 0.7
+step 16, validation accuracy 0.404
+step 16, learning rate 1e-05
+epoch 17: ================================================================================
+step 17, training accuracy 0.64
+step 17, validation accuracy 0.4025
+step 17, learning rate 1e-05
+epoch 18: ================================================================================
+step 18, training accuracy 0.78
+step 18, validation accuracy 0.4105
+step 18, learning rate 7.5e-06
+epoch 19: ================================================================================
+step 19, training accuracy 0.78
+step 19, validation accuracy 0.4224
+step 19, learning rate 7.5e-06
+epoch 20: ================================================================================
+step 20, training accuracy 0.76
+step 20, validation accuracy 0.4255
+step 20, learning rate 7.5e-06
+epoch 21: ================================================================================
+step 21, training accuracy 0.88
+step 21, validation accuracy 0.4217
+step 21, learning rate 7.5e-06
+epoch 22: ================================================================================
+step 22, training accuracy 0.78
+step 22, validation accuracy 0.4319
+step 22, learning rate 7.5e-06
+epoch 23: ================================================================================
+step 23, training accuracy 0.88
+step 23, validation accuracy 0.4298
+step 23, learning rate 7.5e-06
+epoch 24: ================================================================================
+step 24, training accuracy 0.8
+step 24, validation accuracy 0.4357
+step 24, learning rate 7.5e-06
+epoch 25: ================================================================================
+step 25, training accuracy 0.94
+step 25, validation accuracy 0.4367
+step 25, learning rate 7.5e-06
+epoch 26: ================================================================================
+step 26, training accuracy 0.92
+step 26, validation accuracy 0.4374
+step 26, learning rate 7.5e-06
+epoch 27: ================================================================================
+step 27, training accuracy 0.92
+step 27, validation accuracy 0.4417
+step 27, learning rate 7.5e-06
+epoch 28: ================================================================================
+step 28, training accuracy 1
+step 28, validation accuracy 0.4405
+step 28, learning rate 7.5e-06
+epoch 29: ================================================================================
+step 29, training accuracy 0.96
+step 29, validation accuracy 0.4431
+step 29, learning rate 7.5e-06
+epoch 30: ================================================================================
+step 30, training accuracy 0.94
+step 30, validation accuracy 0.4465
+step 30, learning rate 7.5e-06
+epoch 31: ================================================================================
+step 31, training accuracy 0.88
+step 31, validation accuracy 0.4433
+step 31, learning rate 7.5e-06
+epoch 32: ================================================================================
+step 32, training accuracy 1
+step 32, validation accuracy 0.4465
+step 32, learning rate 5.625e-06
+epoch 33: ================================================================================
+step 33, training accuracy 0.92
+step 33, validation accuracy 0.4523
+step 33, learning rate 5.625e-06
+epoch 34: ================================================================================
+step 34, training accuracy 0.94
+step 34, validation accuracy 0.441
+step 34, learning rate 5.625e-06
+epoch 35: ================================================================================
+step 35, training accuracy 0.96
+step 35, validation accuracy 0.4486
+step 35, learning rate 5.625e-06
+epoch 36: ================================================================================
+step 36, training accuracy 0.94
+step 36, validation accuracy 0.4599
+step 36, learning rate 5.625e-06
+epoch 37: ================================================================================
+step 37, training accuracy 0.96
+step 37, validation accuracy 0.4566
+step 37, learning rate 5.625e-06
+epoch 38: ================================================================================
+step 38, training accuracy 0.98
+step 38, validation accuracy 0.4598
+step 38, learning rate 4.21875e-06
+epoch 39: ================================================================================
+step 39, training accuracy 0.96
+step 39, validation accuracy 0.4437
+step 39, learning rate 4.21875e-06
+epoch 40: ================================================================================
+step 40, training accuracy 1
+step 40, validation accuracy 0.4684
+step 40, learning rate 4.21875e-06
+epoch 41: ================================================================================
+step 41, training accuracy 0.98
+step 41, validation accuracy 0.4511
+step 41, learning rate 4.21875e-06
+epoch 42: ================================================================================
+step 42, training accuracy 0.98
+step 42, validation accuracy 0.4539
+step 42, learning rate 4.21875e-06
+epoch 43: ================================================================================
+step 43, training accuracy 0.98
+step 43, validation accuracy 0.46
+step 43, learning rate 3.16406e-06
+epoch 44: ================================================================================
+step 44, training accuracy 0.98
+step 44, validation accuracy 0.4657
+step 44, learning rate 3.16406e-06
+epoch 45: ================================================================================
+step 45, training accuracy 0.98
+step 45, validation accuracy 0.4639
+step 45, learning rate 3.16406e-06
+epoch 46: ================================================================================
+step 46, training accuracy 1
+step 46, validation accuracy 0.473
+step 46, learning rate 3.16406e-06
+epoch 47: ================================================================================
+step 47, training accuracy 1
+step 47, validation accuracy 0.4662
+step 47, learning rate 3.16406e-06
+epoch 48: ================================================================================
+step 48, training accuracy 1
+step 48, validation accuracy 0.4765
+step 48, learning rate 2.37305e-06
+epoch 49: ================================================================================
+step 49, training accuracy 0.96
+step 49, validation accuracy 0.4756
+step 49, learning rate 2.37305e-06
+testing
+Test accuracy accuracy 0.4766
+initializing network
+0 conv1_1_W (3, 3, 3, 64)
+1 conv1_1_b (64,)
+2 conv1_2_W (3, 3, 64, 64)
+3 conv1_2_b (64,)
+4 conv2_1_W (3, 3, 64, 128)
+5 conv2_1_b (128,)
+6 conv2_2_W (3, 3, 128, 128)
+7 conv2_2_b (128,)
+8 conv3_1_W (3, 3, 128, 256)
+9 conv3_1_b (256,)
+10 conv3_2_W (3, 3, 256, 256)
+11 conv3_2_b (256,)
+12 conv3_3_W (3, 3, 256, 256)
+13 conv3_3_b (256,)
+14 conv4_1_W (3, 3, 256, 512)
+15 conv4_1_b (512,)
+16 conv4_2_W (3, 3, 512, 512)
+17 conv4_2_b (512,)
+18 conv4_3_W (3, 3, 512, 512)
+19 conv4_3_b (512,)
+20 conv5_1_W (3, 3, 512, 512)
+21 conv5_1_b (512,)
+22 conv5_2_W (3, 3, 512, 512)
+23 conv5_2_b (512,)
+24 conv5_3_W (3, 3, 512, 512)
+25 conv5_3_b (512,)
+26 fc6_W (25088, 4096)
