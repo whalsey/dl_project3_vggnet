@@ -30,4 +30,44 @@ initializing network
 28 fc7_W (4096, 4096)
 29 fc7_b (4096,)
 training
-epoch 0: ===========
+epoch 0: ================================================================================
+step 0, training accuracy 0.28
+step 0, validation accuracy 0.3064
+step 0, learning rate 1e-05
+epoch 1: ================================================================================
+step 1, training accuracy 0.3
+step 1, validation accuracy 0.3151
+step 1, learning rate 1e-05
+epoch 2: ================================================================================
+step 2, training accuracy 0.4
+step 2, validation accuracy 0.3286
+step 2, learning rate 1e-05
+epoch 3: ================================================================================
+step 3, training accuracy 0.44
+step 3, validation accuracy 0.3521
+step 3, learning rate 1e-05
+epoch 4: ================================================================================
+step 4, training accuracy 0.4
+step 4, validation accuracy 0.3504
+step 4, learning rate 1e-05
+epoch 5: ================================================================================
+step 5, training accuracy 0.46
+step 5, validation accuracy 0.3581
+step 5, learning rate 1e-05
+epoch 6: ================================================================================
+step 6, training accuracy 0.54
+step 6, validation accuracy 0.3553
+step 6, learning rate 1e-05
+epoch 7: ================================================================================
+step 7, training accuracy 0.38
+step 7, validation accuracy 0.3682
+step 7, learning rate 1e-05
+epoch 8: ================================================================================
+step 8, training accuracy 0.5
+step 8, validation accuracy 0.3595
+step 8, learning rate 1e-05
+epoch 9: ================================================================================
+step 9, training accuracy 0.58
+step 9, validation accuracy 0.3757
+step 9, learning rate 1e-05
+epoch 10: ===============================================================
