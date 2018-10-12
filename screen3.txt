@@ -70,4 +70,24 @@ epoch 9: =======================================================================
 step 9, training accuracy 0.58
 step 9, validation accuracy 0.3757
 step 9, learning rate 1e-05
-epoch 10: ===============================================================
+epoch 10: ================================================================================
+step 10, training accuracy 0.5
+step 10, validation accuracy 0.3713
+step 10, learning rate 1e-05
+epoch 11: ================================================================================
+step 11, training accuracy 0.52
+step 11, validation accuracy 0.381
+step 11, learning rate 7.5e-06
+epoch 12: ================================================================================
+step 12, training accuracy 0.6
+step 12, validation accuracy 0.3749
+step 12, learning rate 7.5e-06
+epoch 13: ================================================================================
+step 13, training accuracy 0.62
+step 13, validation accuracy 0.3828
+step 13, learning rate 7.5e-06
+epoch 14: ================================================================================
+step 14, training accuracy 0.66
+step 14, validation accuracy 0.3881
+step 14, learning rate 7.5e-06
+epoch 15: ================================================================================
