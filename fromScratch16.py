@@ -302,11 +302,11 @@ class vgg16:
 
         extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
-        for i in range(0,10000,50):
+        # for i in range(0,10000,50):
         # for i in range(0, 500, 50):
-            average.append( self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.test_X[i:i+50], self.y_: data.test_y[i:i+50], self.training : False, self.keep_drop_prob : 1}) )
+        ave = self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.test_X, self.y_: data.test_y, self.training : False, self.keep_drop_prob : 1})
 
-        ave = np.array(average).mean()
+        # ave = np.array(average).mean()
 
         print('Test accuracy accuracy %g' % (ave))
 
