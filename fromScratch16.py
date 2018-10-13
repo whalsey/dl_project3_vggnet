@@ -10,15 +10,14 @@
 
 import tensorflow as tf
 import numpy as np
-import os
 import sys
 import data_processing
 
 data = data_processing.read_cifar10_data()
-data.zero_center()
+data.normalize()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=1e-5, epochs=100, batch=50, decay=0.5):
+    def __init__(self, weights=None, sess=None, lr=1e-5, epochs=100, batch=50, decay=0.5, dropout=0.8):
         self.lr = lr
         self.decay = decay
         self.epochs = epochs
@@ -26,7 +25,7 @@ class vgg16:
         self.convlayers()
         self.fc_layers()
         self.probs = tf.nn.softmax(self.fc3l)
-
+        self.dropout = dropout
         if weights is not None and sess is not None:
             self.load_weights(weights, sess)
 
@@ -36,6 +35,8 @@ class vgg16:
 
         self.x = tf.placeholder(tf.float32, shape=[None, 32, 32, 3])
         self.y_ = tf.placeholder(tf.float32, shape=[None, 10])
+        self.keep_drop_prob = tf.placeholder(tf.float32)
+        self.training = tf.placeholder(tf.bool)
 
         # # zero-mean input
         # # todo - this probably should be changed b/c it doesn't apply to our new dataset
@@ -48,6 +49,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.x, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[64], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv1_1 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -57,6 +59,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.conv1_1, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[64], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv1_2 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -69,6 +72,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.pool1, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[128], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv2_1 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -78,6 +82,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.conv2_1, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[128], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv2_2 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -90,6 +95,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.pool2, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[256], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv3_1 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -99,6 +105,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.conv3_1, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[256], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv3_2 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -108,6 +115,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.conv3_2, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[256], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv3_3 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -120,6 +128,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.pool3, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[512], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv4_1 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -129,6 +138,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.conv4_1, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[512], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv4_2 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -138,6 +148,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.conv4_2, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[512], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv4_3 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -150,6 +161,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.pool4, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[512], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv5_1 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -159,6 +171,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.conv5_1, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[512], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv5_2 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -168,6 +181,7 @@ class vgg16:
             conv = tf.nn.conv2d(self.conv5_2, kernel, [1, 1, 1, 1], padding='SAME')
             biases = tf.Variable(tf.constant(0.0, shape=[512], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(conv, biases)
+            out = tf.layers.batch_normalization(out, training=self.training)
             self.conv5_3 = tf.nn.relu(out, name=scope)
             self.parameters += [kernel, biases]
 
@@ -178,28 +192,32 @@ class vgg16:
         # fc1
         with tf.name_scope('fc1') as scope:
             shape = int(np.prod(self.pool5.get_shape()[1:]))
-            # todo - use dense layers instead and add dropout
-            fc1w = tf.Variable(tf.truncated_normal([shape, 1024], dtype=tf.float32, stddev=1e-1), name='weights')
+            fc1w = tf.Variable(tf.truncated_normal([shape, 4096], dtype=tf.float32, stddev=1e-1), name='weights')
             fc1b = tf.Variable(tf.constant(1.0, shape=[4096], dtype=tf.float32), trainable=True, name='biases')
             pool5_flat = tf.reshape(self.pool5, [-1, shape])
             fc1l = tf.nn.bias_add(tf.matmul(pool5_flat, fc1w), fc1b)
+            fc1l = tf.layers.batch_normalization(fc1l, training=self.training)
             self.fc1 = tf.nn.relu(fc1l)
+            self.fc1 = tf.layers.dropout(self.fc1, 1-self.keep_drop_prob, training=self.training)
             self.parameters += [fc1w, fc1b]
 
         # fc2
         with tf.name_scope('fc2') as scope:
-            fc2w = tf.Variable(tf.truncated_normal([1024, 1024], dtype=tf.float32, stddev=1e-1), name='weights')
+            fc2w = tf.Variable(tf.truncated_normal([4096, 4096], dtype=tf.float32, stddev=1e-1), name='weights')
             fc2b = tf.Variable(tf.constant(1.0, shape=[4096], dtype=tf.float32), trainable=True, name='biases')
             fc2l = tf.nn.bias_add(tf.matmul(self.fc1, fc2w), fc2b)
+            fc2l = tf.layers.batch_normalization(fc2l, training=self.training)
             self.fc2 = tf.nn.relu(fc2l)
+            self.fc2 = tf.layers.dropout(self.fc2, 1-self.keep_drop_prob, training=self.training)
             self.parameters += [fc2w, fc2b]
 
         # fc3
         # the output of this layer must be changed in order to accommodate the fact that cifar-10 only has 10 labels
         with tf.name_scope('fc3') as scope:
-            fc3w = tf.Variable(tf.truncated_normal([1024, 10], dtype=tf.float32, stddev=1e-1), name='weights')
+            fc3w = tf.Variable(tf.truncated_normal([4096, 10], dtype=tf.float32, stddev=1e-1), name='weights')
             fc3b = tf.Variable(tf.constant(1.0, shape=[10], dtype=tf.float32), trainable=True, name='biases')
-            self.fc3l = tf.nn.bias_add(tf.matmul(self.fc2, fc3w), fc3b)
+            out = tf.nn.bias_add(tf.matmul(self.fc2, fc3w), fc3b)
+            self.fc3l = tf.layers.batch_normalization(out, training=self.training)
             self.parameters += [fc3w, fc3b]
 
         out = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y_, logits=self.fc3l))
@@ -222,6 +240,10 @@ class vgg16:
         train_result = []
         valid_result = []
         stop_acc = 0
+        stuck = 0
+
+        extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+
         for i in range(self.epochs):
             sys.stdout.write("epoch {}: ".format(i))
             sys.stdout.flush()
@@ -234,7 +256,7 @@ class vgg16:
                 if j%10 == 0:
                     sys.stdout.write("=")
                     sys.stdout.flush()
-                self.sess.run([self.train_step], feed_dict={self.x: batch[0], self.y_: batch[1]})
+                self.sess.run([self.train_step, extra_update_ops], feed_dict={self.x: batch[0], self.y_: batch[1], self.training : True})
 
                 old_batch = batch
                 batch = data.next_batch(self.batch)
@@ -245,7 +267,7 @@ class vgg16:
             if i % report_freq == 0 and old_batch != []:
 
                 train_acc = self.sess.run(self.accuracy,
-                                          feed_dict={self.x: old_batch[0], self.y_: old_batch[1]})
+                                          feed_dict={self.x: data.train_X[:10000], self.y_: data.train_y[:10000], self.training : False})
                 train_result.append(train_acc)
 
                 valid_acc = self.valid_eval()
@@ -253,14 +275,17 @@ class vgg16:
 
                 lr_l.append(self.lr)
 
+                stuck = stuck if valid_acc > stop_acc else stuck + 1
                 stop_acc = valid_acc if valid_acc > stop_acc else stop_acc
 
                 print('step %d, training accuracy %g' % (i, train_acc))
                 print('step %d, validation accuracy %g' % (i, valid_acc))
+                print('step %d, learning rate %g' % (i, self.lr))
 
             # learning rate decay
-            if len(valid_result) > 3 and stop_acc not in valid_result[-3:]:
+            if stuck >= 3 and stop_acc:
                 self.lr *= self.decay
+                stuck = 0
 
             if len(valid_result) > 6 and stop_acc not in valid_result[-6:]:
                 break
@@ -274,8 +299,12 @@ class vgg16:
     def test_eval(self):
         self.eval()
         average = []
+
+        extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+
         for i in range(0,10000,50):
-            average.append( self.sess.run(self.accuracy, feed_dict={self.x: data.test_X[i:i+50], self.y_: data.test_y[i:i+50]}) )
+        # for i in range(0, 500, 50):
+            average.append( self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.test_X[i:i+50], self.y_: data.test_y[i:i+50], self.training : False}) )
 
         ave = np.array(average).mean()
 
@@ -286,8 +315,12 @@ class vgg16:
     def valid_eval(self):
         self.eval()
         average = []
+
+        extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+
         for i in range(0,10000,50):
-            average.append( self.sess.run(self.accuracy, feed_dict={self.x: data.valid_X[i:i+50], self.y_: data.valid_y[i:i+50]}) )
+        # for i in range(0, 500, 50):
+            average.append( self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.valid_X[i:i+50], self.y_: data.valid_y[i:i+50]}) )
 
         ave = np.array(average).mean()
 
@@ -296,13 +329,14 @@ class vgg16:
 if __name__ == '__main__':
     print("initializing network")
     sess = tf.Session()
+    tf.reset_default_graph()
     net = vgg16(sess=sess)
     print("training")
     train_acc, valid_acc, lr_l = net.train(1)
     print("testing")
     test_acc = net.test_eval()
 
-    with open("output.csv", 'w') as o:
+    with open("scratchnet.csv", 'w') as o:
         buffer = ','.join(["epoch"] + [str(i) for i in range(20)])+'\n'
         o.write(buffer)
 

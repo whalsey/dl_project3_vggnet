@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+import random
 # from scipy.misc import imresize
 
 def unpickle(file):
@@ -15,6 +16,40 @@ def pad_image(dataset, padding):
             
 def resize_image(dataset, new_size):
     return tf.image.resize_images(dataset, new_size, method=tf.image.resize_bilinear)
+
+def randShift(dataset):
+    horlen = dataset.shape[1]
+    verlen = dataset.shape[2]
+
+    hor = random.randint(-3, 3)
+    ver = random.randint(-3, 3)
+    print(dataset[0,:,:,0].shape)
+    print(dataset[0, :, :, 0])
+    tmp = np.roll(dataset, shift=(hor), axis=(2))
+    print(tmp[0, :, :, 0])
+    tmp = np.roll(tmp, shift=(ver), axis=(1))
+
+    print(tmp[0, :, :, 0])
+
+    if hor > 0:
+        for i in range(hor):
+            tmp[:,:,i,:] = tmp[:,:,hor,:]
+    else:
+        for i in range(horlen+hor, horlen, 1):
+            tmp[:,:,i,:] = tmp[:,:,hor-1,:]
+
+    print(tmp[0, :, :, 0])
+
+    if ver > 0:
+        for i in range(ver):
+            tmp[:,i,:,:] = tmp[:,ver,:,:]
+    else:
+        for i in range(verlen+ver, verlen, 1):
+            tmp[:,i,:,:] = tmp[:,ver-1,:,:]
+
+    print(tmp[0, :, :, 0])
+
+    return tmp
 
 class cifar_10_data:
     def __init__(self):
@@ -85,37 +120,53 @@ class cifar_10_data:
             self._data = self.train_X[idx0]  # get list of `num` random samples
             self._labels = self.train_y[idx0]
 
-            self._index_in_epoch = 0  # avoid the case where the #sample != integar times of batch_size
+            self._index_in_epoch = 0  # avoid the case where the #sample != integer times of batch_size
 
             return [], []
         else:
             self._index_in_epoch += batch_size
             end = self._index_in_epoch
-            return self._data[start:end], self._labels[start:end]
+
+            # add small perturbations to the data before passing out
+            # as a method of "augmenting" the dataset but without
+            # actually changing the training set size
+            return randShift(self._data[start:end]), self._labels[start:end]
 
     def get_mean(self):
         return self.train_X.mean(axis=(0, 1, 2))
 
-    def zero_center(self):
+    def get_stddev(self):
+        return self.train_X.std(axis=(0, 1, 2))
+
+    def normalize(self):
         mean = self.get_mean()
-        self.train_X = np.subtract(self.train_X, np.floor(mean))
-        self.valid_X = np.subtract(self.valid_X, np.floor(mean))
-        self.test_X = np.subtract(self.test_X, np.floor(mean))
+        std = self.get_stddev()
+        self.train_X = np.subtract(self.train_X, mean)
+        self.valid_X = np.subtract(self.valid_X, mean)
+        self.test_X = np.subtract(self.test_X, mean)
+
+        self.train_X = self.train_X / std
+        self.valid_X = self.valid_X / std
+        self.test_X = self.test_X / std
 
 def read_cifar10_data():
     return cifar_10_data()
 
 if __name__=="__main__":
-    test = read_cifar10_data()
+    # test = read_cifar10_data()
+    #
+    # hello = test.get_mean()
+    # for _ in range(5):
+    #     input, labels = test.next_batch(20000)
+    #
+    #     while input != []:
+    #         print(input)
+    #         print(input.shape)
+    #
+    #         input, labels = test.next_batch(20000)
+    #
+    #     print("done")
 
-    hello = test.get_mean()
-    for _ in range(5):
-        input, labels = test.next_batch(20000)
+    test = np.arange(150).reshape((3,5,5,2))
 
-        while input != []:
-            print(input)
-            print(input.shape)
-
-            input, labels = test.next_batch(20000)
-
-        print("done")
+    output = randShift(test)
