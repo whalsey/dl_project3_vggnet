@@ -298,13 +298,10 @@ class vgg16:
 
     def test_eval(self):
         self.eval()
-        average = []
-
-        extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
         # for i in range(0,10000,50):
         # for i in range(0, 500, 50):
-        ave = self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.test_X, self.y_: data.test_y, self.training : False, self.keep_drop_prob : 1})
+        ave = self.sess.run(self.accuracy, feed_dict={self.x: data.test_X, self.y_: data.test_y, self.training : False, self.keep_drop_prob : 1})
 
         # ave = np.array(average).mean()
 
@@ -314,14 +311,11 @@ class vgg16:
 
     def valid_eval(self):
         self.eval()
-        average = []
-
-        extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
         # for i in range(0,10000,50):
         # for i in range(0, 500, 50):
-        ave = self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.valid_X, self.y_: data.valid_y, self.training : False, self.keep_drop_prob : 1})
-        print(ave)
+        ave = self.sess.run(self.accuracy, feed_dict={self.x: data.valid_X, self.y_: data.valid_y, self.training : False, self.keep_drop_prob : 1})
+        # print(ave)
 
         # ave = np.array(average).mean()
 
