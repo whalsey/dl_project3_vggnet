@@ -17,7 +17,7 @@ data = data_processing.read_cifar10_data()
 data.normalize()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=100, batch=500, decay=0.5, dropout=0.8):
+    def __init__(self, weights=None, sess=None, lr=5e-5, epochs=100, batch=100, decay=0.7, dropout=0.85):
         self.lr = lr
         self.decay = decay
         self.epochs = epochs
@@ -331,7 +331,7 @@ if __name__ == '__main__':
     print("testing")
     test_acc = net.test_eval()
 
-    with open("scratchnet.csv", 'w') as o:
+    with open("scratchnet2.csv", 'w') as o:
         buffer = ','.join(["epoch"] + [str(i) for i in range(20)])+'\n'
         o.write(buffer)
 
