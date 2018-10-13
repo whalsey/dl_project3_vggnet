@@ -35,7 +35,7 @@ class vgg16:
 
         self.x = tf.placeholder(tf.float32, shape=[None, 32, 32, 3])
         self.y_ = tf.placeholder(tf.float32, shape=[None, 10])
-        self.keep_drop_prob = self.dropout
+        self.keep_drop_prob = tf.placeholder(tf.float32)
         self.training = tf.placeholder(tf.bool)
 
         # # zero-mean input
@@ -256,7 +256,7 @@ class vgg16:
                 if j%10 == 0:
                     sys.stdout.write("=")
                     sys.stdout.flush()
-                self.sess.run([self.train_step, extra_update_ops], feed_dict={self.x: batch[0], self.y_: batch[1], self.training : True})
+                self.sess.run([self.train_step, extra_update_ops], feed_dict={self.x: batch[0], self.y_: batch[1], self.training : True, self.keep_drop_prob : self.dropout})
 
                 old_batch = batch
                 batch = data.next_batch(self.batch)
@@ -267,7 +267,7 @@ class vgg16:
             if i % report_freq == 0 and old_batch != []:
 
                 train_acc = self.sess.run(self.accuracy,
-                                          feed_dict={self.x: data.train_X[:10000], self.y_: data.train_y[:10000], self.training : False})
+                                          feed_dict={self.x: data.train_X[:10000], self.y_: data.train_y[:10000], self.training : False, self.keep_drop_prob : 1})
                 train_result.append(train_acc)
 
                 valid_acc = self.valid_eval()
@@ -304,7 +304,7 @@ class vgg16:
 
         for i in range(0,10000,50):
         # for i in range(0, 500, 50):
-            average.append( self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.test_X[i:i+50], self.y_: data.test_y[i:i+50], self.training : False}) )
+            average.append( self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.test_X[i:i+50], self.y_: data.test_y[i:i+50], self.training : False, self.keep_drop_prob : 1}) )
 
         ave = np.array(average).mean()
 
