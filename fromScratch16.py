@@ -17,12 +17,12 @@ data = data_processing.read_cifar10_data()
 data.normalize()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=5e-5, epochs=100, batch=100, decay=0.7, dropout=0.85):
+    def __init__(self, weights=None, sess=None, lr=5e-5, epochs=100, batch=100, decay=0.7, keep_rate=0.85):
         self.lr = lr
         self.decay = decay
         self.epochs = epochs
         self.batch = batch
-        self.dropout = dropout
+        self.keep_rate = keep_rate
         self.convlayers()
         self.fc_layers()
         self.probs = tf.nn.softmax(self.fc3l)
@@ -192,8 +192,8 @@ class vgg16:
         # fc1
         with tf.name_scope('fc1') as scope:
             shape = int(np.prod(self.pool5.get_shape()[1:]))
-            fc1w = tf.Variable(tf.truncated_normal([shape, 4096], dtype=tf.float32, stddev=1e-1), name='weights')
-            fc1b = tf.Variable(tf.constant(1.0, shape=[4096], dtype=tf.float32), trainable=True, name='biases')
+            fc1w = tf.Variable(tf.truncated_normal([shape, 1024], dtype=tf.float32, stddev=1e-1), name='weights')
+            fc1b = tf.Variable(tf.constant(1.0, shape=[1024], dtype=tf.float32), trainable=True, name='biases')
             pool5_flat = tf.reshape(self.pool5, [-1, shape])
             fc1l = tf.nn.bias_add(tf.matmul(pool5_flat, fc1w), fc1b)
             fc1l = tf.layers.batch_normalization(fc1l, training=self.training)
@@ -203,7 +203,7 @@ class vgg16:
 
         # fc2
         with tf.name_scope('fc2') as scope:
-            fc2w = tf.Variable(tf.truncated_normal([4096, 4096], dtype=tf.float32, stddev=1e-1), name='weights')
+            fc2w = tf.Variable(tf.truncated_normal([1024, 1024], dtype=tf.float32, stddev=1e-1), name='weights')
             fc2b = tf.Variable(tf.constant(1.0, shape=[4096], dtype=tf.float32), trainable=True, name='biases')
             fc2l = tf.nn.bias_add(tf.matmul(self.fc1, fc2w), fc2b)
             fc2l = tf.layers.batch_normalization(fc2l, training=self.training)
@@ -214,7 +214,7 @@ class vgg16:
         # fc3
         # the output of this layer must be changed in order to accommodate the fact that cifar-10 only has 10 labels
         with tf.name_scope('fc3') as scope:
-            fc3w = tf.Variable(tf.truncated_normal([4096, 10], dtype=tf.float32, stddev=1e-1), name='weights')
+            fc3w = tf.Variable(tf.truncated_normal([1024, 10], dtype=tf.float32, stddev=1e-1), name='weights')
             fc3b = tf.Variable(tf.constant(1.0, shape=[10], dtype=tf.float32), trainable=True, name='biases')
             out = tf.nn.bias_add(tf.matmul(self.fc2, fc3w), fc3b)
             self.fc3l = tf.layers.batch_normalization(out, training=self.training)
@@ -256,7 +256,7 @@ class vgg16:
                 if j%10 == 0:
                     sys.stdout.write("=")
                     sys.stdout.flush()
-                self.sess.run([self.train_step, extra_update_ops], feed_dict={self.x: batch[0], self.y_: batch[1], self.training : True, self.keep_drop_prob : self.dropout})
+                self.sess.run([self.train_step, extra_update_ops], feed_dict={self.x: batch[0], self.y_: batch[1], self.training : True, self.keep_drop_prob : self.keep_rate})
 
                 old_batch = batch
                 batch = data.next_batch(self.batch)
