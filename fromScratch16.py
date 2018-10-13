@@ -320,7 +320,7 @@ class vgg16:
 
         for i in range(0,10000,50):
         # for i in range(0, 500, 50):
-            average.append( self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.valid_X[i:i+50], self.y_: data.valid_y[i:i+50]}) )
+            average.append( self.sess.run([self.accuracy, extra_update_ops], feed_dict={self.x: data.valid_X[i:i+50], self.y_: data.valid_y[i:i+50], self.training : False, self.keep_drop_prob : 1}) )
 
         ave = np.array(average).mean()
 
