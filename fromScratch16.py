@@ -22,10 +22,10 @@ class vgg16:
         self.decay = decay
         self.epochs = epochs
         self.batch = batch
+        self.dropout = dropout
         self.convlayers()
         self.fc_layers()
         self.probs = tf.nn.softmax(self.fc3l)
-        self.dropout = dropout
         if weights is not None and sess is not None:
             self.load_weights(weights, sess)
 
@@ -35,7 +35,7 @@ class vgg16:
 
         self.x = tf.placeholder(tf.float32, shape=[None, 32, 32, 3])
         self.y_ = tf.placeholder(tf.float32, shape=[None, 10])
-        self.keep_drop_prob = tf.placeholder(tf.float32)
+        self.keep_drop_prob = self.dropout
         self.training = tf.placeholder(tf.bool)
 
         # # zero-mean input

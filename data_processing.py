@@ -22,14 +22,10 @@ def randShift(dataset):
     verlen = dataset.shape[2]
 
     hor = random.randint(-3, 3)
-    ver = random.randint(-3, 3)
-    print(dataset[0,:,:,0].shape)
-    print(dataset[0, :, :, 0])
-    tmp = np.roll(dataset, shift=(hor), axis=(2))
-    print(tmp[0, :, :, 0])
-    tmp = np.roll(tmp, shift=(ver), axis=(1))
 
-    print(tmp[0, :, :, 0])
+    ver = random.randint(-3, 3)
+    tmp = np.roll(dataset, shift=(hor), axis=(2))
+    tmp = np.roll(tmp, shift=(ver), axis=(1))
 
     if hor > 0:
         for i in range(hor):
@@ -38,16 +34,12 @@ def randShift(dataset):
         for i in range(horlen+hor, horlen, 1):
             tmp[:,:,i,:] = tmp[:,:,hor-1,:]
 
-    print(tmp[0, :, :, 0])
-
     if ver > 0:
         for i in range(ver):
             tmp[:,i,:,:] = tmp[:,ver,:,:]
     else:
         for i in range(verlen+ver, verlen, 1):
             tmp[:,i,:,:] = tmp[:,ver-1,:,:]
-
-    print(tmp[0, :, :, 0])
 
     return tmp
 
