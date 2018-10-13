@@ -17,7 +17,7 @@ data = data_processing.read_cifar10_data()
 data.normalize()
 
 class vgg16:
-    def __init__(self, weights=None, sess=None, lr=1e-5, epochs=100, batch=50, decay=0.5, dropout=0.8):
+    def __init__(self, weights=None, sess=None, lr=1e-4, epochs=100, batch=500, decay=0.5, dropout=0.8):
         self.lr = lr
         self.decay = decay
         self.epochs = epochs
