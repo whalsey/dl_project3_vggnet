@@ -41,7 +41,7 @@ def randShift(dataset):
         for i in range(verlen+ver, verlen, 1):
             tmp[:,i,:,:] = tmp[:,ver-1,:,:]
 
-    tmp = tmp + np.random.normal(0, 0.6, tmp.shape)
+    tmp = tmp + np.random.normal(0, 0.01, tmp.shape)
 
     return tmp
 
